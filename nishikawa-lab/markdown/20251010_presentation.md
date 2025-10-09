@@ -6,162 +6,176 @@ theme: figma_like
 ---
 
 # SGDの改良
-- 教科書p45~
-- 3.5章
-2025-10-10 / Kenichiro Goto
+**Kenichiro Goto** / 2025-10-10  
+教科書 p.45〜p49（第3.5章）
 
 ---
 
 # 扱うテーマ
 - 勾配降下法に基づく更新則を整理する
-- 自動的に学習率を調整する代表的手法のポイントを把握する
+- 自動的に学習率を調整する代表的手法を理解する
 - 近年の改良手法と SAM の位置づけを俯瞰する
 
 ---
 
 # 基本式と勾配
-- パラメータ更新の基本形は以下のようであった
+- パラメータ更新の基本形  
   $$
   \mathbf{w}_{t+1} = \mathbf{w}_t - \varepsilon \nabla E_t 
   $$
-- 以下のように定義することで重みの更新量を扱うことを明示的にする
-  - 重みの更新量
-    $$
-    \Delta\mathbf{w}_t = \mathbf{w}_{t+1} - \mathbf{w}_t
-    $$
-  - 勾配ベクトルの定義
-    $$
-    \mathbf{g}_t = \nabla_{\mathbf{w}} E(\mathbf{w}_t)
-    = \begin{pmatrix}
-    \frac{\partial E}{\partial w_1} & \cdots & \frac{\partial E}{\partial w_d}
-    \end{pmatrix}^{\!\top}
-    $$
-- 以上を用いて次のように更新量をおく($\mathbf{g}_t$の$i$成分を$g_{t, i}$とする)
-$$
-\Delta w_{t, i} = - \varepsilon g_{t, i}
-$$
-    
+
+- 更新量と勾配を定義  
+  $$
+  \Delta\mathbf{w}_t = \mathbf{w}_{t+1} - \mathbf{w}_t, \qquad
+  \mathbf{g}_t = \nabla_{\mathbf{w}} E(\mathbf{w}_t)
+  = \begin{pmatrix}
+  \frac{\partial E}{\partial w_1} & \cdots & \frac{\partial E}{\partial w_d}
+  \end{pmatrix}^{\!\top}
+  $$
+
+- 各成分の更新則  
+  $$
+  \Delta w_{t, i} = - \varepsilon g_{t, i}
+  $$
 
 ---
 
 # 学習率の選定
-- SGDでの学習の安定性と収束速度は学習率 $\varepsilon$ に左右される
-- SGDでの選定の重要度を下げるため、更新幅を自動調整する手法が多数提案
+- SGD の収束速度と安定性は学習率 $\varepsilon$ に強く依存  
+- 適切な $\varepsilon$ の設定を不要にするための「自動調整系」が多数提案  
 
 ---
 
 # 自動調整系の代表例
-- AdaGrad（以降の手法のベース）
-- RMSProp / AdaDelta
-- Adam
-- RAdam（Rectified Adam）
-- AdamW
+- AdaGrad（以降の手法の基礎）  
+- RMSProp / AdaDelta  
+- Adam  
+- RAdam（Rectified Adam）  
+- AdamW  
 
 ---
 
 # AdaGrad
-- よく更新された成分には小さな学習率、あまり更新されなかった成分には大きな学習率を割り当てる
-- 更新則
+- よく更新された成分には小さな学習率、あまり更新されなかった成分には大きな学習率を割り当てる  
+- 更新則  
   $$
   \Delta w_{t, i} = - \frac{\epsilon}{\sqrt{\sum_{t'=1}^t g^{2}_{t', i} + \varepsilon}} g_{t, i}
   $$
-- $\sum_{t'=1}^t g^{2}_{t', i}$ が単調増加するため$\Delta w_{t, i} \rightarrow 0$となり更新が止まるのが課題
-- $\varepsilon$はゼロ除算を避けるため
+- 累積項 $\sum_{t'=1}^t g^{2}_{t', i}$ が単調増加するため、更新が停止する傾向  
+- $\varepsilon$ はゼロ除算を防ぐために加える微小項  
+> ※ 本スライドでは $\epsilon$ を学習率、$\varepsilon$ を数値安定化(ゼロ除算回避)のための
+> 微小項として用いる。
 
 ---
 
-## AdaGradのグラフイメージ
-ここで同じ方向に同じペースで更新し続けるより別成分の更新も試した方がいいという図を載せたい
-
+## AdaGradの直感図（イメージ）
+> - 同じ方向への大きな更新を抑え、別の方向への探索を促す  
+> - これにより凸谷の“底”での進み過ぎを防ぐ  
 
 ---
 
 # RMSProp
-- 累積和の代わり移動平均を用いて更新量$\Delta w_{t, i}$の過度な減衰を防ぐ
-- ~~直近のデータのみ使うので~~ 累積和のように大きくなり続けることはない
+- 累積和の代わりに「指数移動平均」を使い、過度な減衰を防ぐ  
   $$
   \langle g_i^2 \rangle_t = \gamma \langle g_i^2\rangle_{t-1} + (1-\gamma) g^2_{t, i}
   $$
-  を用いて以下のように更新量を決める
+- 更新式  
   $$
   \Delta w_{t,i} = - \frac{\epsilon}{\sqrt{\langle g_i^2 \rangle _t + \varepsilon}}g_{t, i}
   $$
+- $\gamma$ は通常 0.9 程度  
+- 「過去をなだらかに忘れる」ことで適応性を確保  
 
 ---
 
 # AdaDelta
+- RMSProp に加え、過去の更新量の情報も用いる  
   $$
   \langle \Delta w_i^2 \rangle_t = \gamma\langle\Delta w_i^2 \rangle_{t-1} + (1-\gamma)(\Delta w_{t, i})^2
   $$
-  を用いて
+- 更新式  
   $$
   \Delta w_{t, i} = - \frac{\sqrt{\langle\Delta w_i^2 \rangle_{t-1} + \varepsilon}}{\sqrt{\langle g_i^2 \rangle_t + \varepsilon}}g_{t, i}
   $$
-### 式の意図
-- $\epsilon$を置き換えたのは物理量としての単位を合わせるため
-- $\langle \Delta w_t \rangle$ の方が自然に思えるが、未知なので直前の $\langle \Delta w_{t-1} \rangle$ を近似値として代用
+
+### 意図
+- $\epsilon$ を単位合わせのため置き換え  
+- $\langle \Delta w_t^2 \rangle$ は未知なので、$t-1$の値で近似  
 
 ---
 
-# Adam のモーメント推定
-- 勾配の一次・二次モーメントを指数移動平均で推定
+# Adam：モーメント推定
+- 一次・二次モーメントを指数移動平均で推定  
   $$
-  m_{t, i} = \beta_1\,m_{t-1, i} + (1-\beta_1)g_{t, i},\qquad
+  m_{t, i} = \beta_1 m_{t-1, i} + (1-\beta_1) g_{t, i}, \qquad
   v_{t, i} = \beta_2 v_{t-1, i} + (1-\beta_2) g^2_{t, i}
   $$
-- 初期段階の過小評価を補正
+
+- 初期段階の過小評価を補正  
   $$
-  \hat{\mathbf{m}}_t = \frac{\mathbf{m}_t}{1 - \beta_1^t},\qquad
-  \hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1 - \beta_2^t}
+  \hat{m}_{t, i} = \frac{m_{t, i}}{1 - \beta_1^t}, \qquad
+  \hat{v}_{t, i} = \frac{v_{t, i}}{1 - \beta_2^t}
   $$
 
 ---
 
-# Adam の更新則と特徴
-- 最終的な更新式
+# Adam：更新則と特徴
+- 最終的な更新式  
   $$
-  \Delta w_{t, i} = - \frac{\epsilon}{\sqrt{\hat{v}_{t, i}} + \epsilon} \hat{m}_{t, i}
+  \Delta w_{t, i} = - \frac{\epsilon}{\sqrt{\hat{v}_{t, i}} + \varepsilon} \hat{m}_{t, i}
   $$
-- 学習率の微調整をしなくても安定した学習が得やすい
-
----
-
-# CNN での報告例
-- Momentum SGD に丁寧な学習率調整を施すと最終精度で優れるケースがある
-- 自動調整系と手動チューニングのトレードオフを理解する必要
+- 学習率の微調整をしなくても安定した学習が得やすい  
+- 過去勾配の「方向」と「分散」を同時に考慮  
 
 ---
 
 # Adam 系の改善案
-- 更新幅$\frac{\epsilon}{\sqrt{\hat{v}_{t, i}}}$を抑える上下限を導入する AdaBound
-- 学習初期(10ステップほど)にモーメントの移動平均の不安定さを補正する RAdam
-- 学習初期の一定期間だけ$\epsilon$を小さめにする「ウォームアップ」
-- "重みの減衰"(教科書式3.9)を更新式に統合する AdamW ($-\epsilon\lambda \mathbf{w}$ を加算)
-  - 重み$\mathbb{w}_t$自身の大きさに応じて減衰量が大きくなる
-  - 元の減衰項はL2正則化由来だけどこれはただ「重みの減衰」のために足した
-  - ゆえに正則化には一致しない
+- **AdaBound**：更新幅 $\frac{\epsilon}{\sqrt{\hat{v}_{t, i}}}$ が極端に振れるのを避けるために上下限を設ける  
+- **RAdam**：学習初期(10step程度)にモーメント平均の不安定さを補正
+- **Warm-up**：初期初期の一定期間のみ $\epsilon$ を小さくして安定化  
+- **AdamW**：重み減衰を更新式に直接組み込む  
+  $$
+  \Delta w_{t, i} = - \frac{\epsilon}{\sqrt{\hat{v}_{t, i}} + \varepsilon} \hat{m}_{t, i} - \epsilon \lambda w_{t, i}
+  $$
+  - 重みの減衰(教科書式3.9)と同じ効果を狙って加えられる
 
 ---
 
 # 学習率スケジューリング
-(これをしないのが強みみたいな話だったけど...)
-- Adamでも$\epsilon$に対しスケジューラを組み合わせると性能が向上する場合が多い
-- コサイン減衰やステップ状の減衰などは依然有効な設計要素
+- Adam でもスケジューラ併用で性能向上する場合あり  
+- 手法例：  
+  - コサイン減衰  
+- 自動調整とスケジューリングを組み合わせる設計が一般的  
 
 ---
 
 # SAM（Sharpness-Aware Minimization）
-- 平坦な極小点を探索し、汎化性能を高めることを狙う
-- 目的関数
+- 平坦な極小点を探索し、汎化性能を高める  
+- 目的関数  
   $$
   \min_{\mathbf{w}} \max_{\lVert \boldsymbol{\epsilon} \rVert_p \le \rho}
   E(\mathbf{w} + \boldsymbol{\epsilon}) + \lambda \lVert \mathbf{w} \rVert_2^2
   $$
-- 内側最大化で最悪摂動を想定しつつパラメータを更新
+- $E$は交差エントロピーなど基本的な損失関数
+- 内側最大化では「最悪の微小摂動」に対して安定な点を探索  
+- 平坦な谷底に収束 → 過学習を抑制  
+
+---
+
+# まとめ表
+
+| 手法 | 仕組みの要点 | 特徴 |
+|------|---------------|------|
+| AdaGrad | 勾配の累積値で更新幅を調整 | 更新が止まりやすい |
+| RMSProp | 累積の代わりに移動平均を使用 | 更新の減衰を防ぐ |
+| AdaDelta | 更新量の平均も利用 | 単位を自然に整える |
+| Adam | 一次・二次モーメントを推定 | 安定して学習しやすい |
+| AdamW | 減衰項を直接加える | 重みの大きさを抑える |
+| SAM | 平坦な極小点を探索 | 汎化性能の向上を狙う |
 
 ---
 
 # まとめ
-- 勾配降下の基本形は更新幅の設計で多様な派生が生まれる
-- 主要な自動調整手法は過去勾配の統計量で学習率を制御
-- 実運用ではスケジューラや正則化、SAM などと組み合わせて性能最適化
+- 更新幅設計することでSGDの改善をするアイデアが多くある
+- 自動調整系は過去勾配統計量で学習率を制御  
+- 実運用ではスケジューラ・正則化・SAM の併用が重要
