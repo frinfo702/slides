@@ -27,6 +27,7 @@ __pycache__/
 venv/
 env/
 .python-version
+.envrc
 
 # Packaging / build artifacts
 build/
