@@ -28,6 +28,7 @@ venv/
 env/
 .python-version
 .envrc
+.direnv/
 
 # Packaging / build artifacts
 build/
