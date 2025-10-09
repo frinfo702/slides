@@ -1,0 +1,112 @@
+/* @theme figma_like */
+
+@import url("https://geistfont.vercel.app/geist.css");
+
+:root {
+  --font-sans: "Geist Sans", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --text-color: #1c1c1e;
+  --muted-color: #6c6c70;
+  --background-color: #f6f7fb;
+  --accent-color: #0066ff;
+  --accent-contrast: #ffffff;
+  --border-radius: 24px;
+  --shadow-soft: 0 20px 45px rgba(17, 17, 26, 0.08);
+}
+
+section {
+  font-family: var(--font-sans);
+  background: var(--background-color);
+  color: var(--text-color);
+  padding: 72px 96px;
+  font-size: 32px;
+  line-height: 1.45;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+}
+
+section h1,
+section h2,
+section h3 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-color);
+}
+
+section h1 {
+  font-size: 2.0em;
+  margin-bottom: 0.35em;
+}
+
+section h2 {
+  font-size: 1.8em;
+  margin-bottom: 0.3em;
+}
+
+section h3 {
+  font-size: 1.3em;
+  margin-bottom: 0.25em;
+}
+
+section p {
+  margin: 0.4em 0;
+  color: var(--text-color);
+}
+
+section strong {
+  font-weight: 600;
+}
+
+section em {
+  font-style: normal;
+  color: var(--accent-color);
+}
+
+section a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+section a:hover {
+  text-decoration: underline;
+}
+
+section blockquote {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 4px solid var(--accent-color);
+  color: var(--muted-color);
+}
+
+section ul,
+section ol {
+  margin: 0.8em 0 0.8em 1.4em;
+  padding: 0;
+}
+
+section code,
+section pre {
+  font-family: "Geist Mono Variable", "Geist Mono", "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.8em;
+  background: rgba(0, 102, 255, 0.08);
+  color: var(--text-color);
+  border-radius: 8px;
+}
+
+section code {
+  padding: 0.15em 0.4em;
+}
+
+section pre {
+  padding: 1em;
+  overflow-x: auto;
+}
+
+section footer {
+  font-size: 0.6em;
+  color: var(--muted-color);
+  position: absolute;
+  bottom: 32px;
+  left: 64px;
+}
