@@ -1,0 +1,6 @@
+{
+  "markdown.marp.themes": [
+    "./theme/figma_like.css",
+    "./theme/arxiv_plain.css"
+  ]
+}

@@ -1,2 +1,66 @@
-# temp file of pptx (lock file)
+#############################
+# OS / Editor
+#############################
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon\r
+._*
+
+# Editors / IDEs
+.idea/
+*.iml
+.vscode/
+.history/
+
+#############################
+# Python
+#############################
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.env.*
+.venv/
+venv/
+env/
+.python-version
+.envrc
+.direnv/
+
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Testing / coverage / caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+#############################
+# Office temporary files
+#############################
+# PowerPoint/Office lock files
 ~$*.pptx
+~$*.ppt
+~$*.docx
+~$*.xlsx
+
+#############################
+# Logs
+#############################
+*.log
