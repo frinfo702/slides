@@ -3,14 +3,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
-# 入力特徴マップ
 x = torch.randn(1, 1, 16, 16)
 
-# ConvTranspose (典型的なCheckerboard発生例)
 deconv = nn.ConvTranspose2d(1, 1, 4, stride=2, padding=1, bias=False)
 out_deconv = deconv(x).detach()
 
-# Resize + Conv (アーティファクト少ない)
 upsampled = F.interpolate(x, scale_factor=2, mode="bilinear", align_corners=False)
 conv = nn.Conv2d(1, 1, 3, padding=1, bias=False)
 out_resizeconv = conv(upsampled).detach()

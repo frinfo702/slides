@@ -2,10 +2,8 @@ import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 
-# 入力 (ランダムノイズ)
 x = torch.randn(1, 1, 8, 8)
 
-# 転置畳み込み（stride=2, padding=1）
 deconv = nn.ConvTranspose2d(
     in_channels=1, out_channels=1, kernel_size=3, stride=2, padding=1, bias=False
 )
