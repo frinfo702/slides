@@ -9,4 +9,9 @@ impl Tensor2D {
     pub fn new(data: Array2<f32>) -> Self {
         Self { data }
     }
+
+    pub fn shape(&self) -> (usize, usize) {
+        // To get the shape, access self.data. Also, fix return type (usize, usize)
+        self.data.dim()
+    }
 }
