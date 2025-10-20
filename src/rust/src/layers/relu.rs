@@ -4,8 +4,6 @@ pub struct ReLU;
 
 impl ReLU {
     pub fn forward(&self, input: &Tensor2D) -> Tensor2D {
-        // 🔥 君の実装部分
-        // max(0, x)
-        unimplemented!()
+        Tensor2D::new(input.data.mapv(|val| val.max(0.0)))
     }
 }
