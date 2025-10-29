@@ -64,3 +64,19 @@ htmlcov/
 # Logs
 #############################
 *.log
+
+#############################
+# Rust
+#############################
+# Build artifacts
+/target/
+/**/target/
+debug/
+
+# Rust backup files
+*.rs.bk
+
+# Sometimes appear outside target on certain tools/platforms
+**/*.rmeta
+**/*.d
+**/*.o
