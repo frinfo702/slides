@@ -2,6 +2,9 @@
   "markdown.marp.themes": [
     "./theme/figma_like.css",
     "./theme/arxiv_plain.css",
-    "./theme/openai-like.css"
+    "./theme/openai-like.css",
+    "https://raw.githubusercontent.com/amaotone/marp-theme-yutori/main/theme/yutori.css",
+    "https://raw.githubusercontent.com/kaisugi/marp-theme-academic/main/themes/academic.css",
+    "https://raw.githubusercontent.com/classmethod/classmethod-marp-theme/main/classmethod-theme.css",
   ]
 }

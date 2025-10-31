@@ -2,6 +2,7 @@
 marp: true
 title: "CNN - aohon; chapter 5.9, 5.10"
 paginate: false 
+theme: yutori
 ---
 
 # アップサンプリング
