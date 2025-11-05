@@ -1,0 +1,205 @@
+/* @theme openai-like */
+@import 'default';
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+/* ========== Tokens ========== */
+:root {
+  --bg: #ffffff;
+  --fg: #0b0f19;         /* deep slate */
+  --muted: #667085;      /* secondary text */
+  --accent: #2563eb;     /* blue, understated */
+  --code-bg: #f6f8fa;    /* light code panel */
+  --border: #e5e7eb;     /* subtle borders */
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+
+  /* image sizing */
+  --img-min: 140px;
+  --img-max: 82vh;          /* image-only (or almost) slide */
+  --img-max-with-text: 55vh;/* when text also exists */
+}
+
+/* ========== Base ========== */
+section {
+  color: var(--fg);
+  background: var(--bg);
+  font-family:
+    "Geist", "Geist Sans", "Noto Sans JP",
+    system-ui, -apple-system, Segoe UI, Roboto,
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Helvetica Neue",
+    Arial, sans-serif;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+
+/* Headings */
+section h1, section h2, section h3, section h4, section h5, section h6 {
+  font-family: "Geist", "Noto Sans JP", system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0.3em 0 0.25em;
+}
+section h1 { font-size: 1.9em; letter-spacing: -0.01em; }
+section h2 { font-size: 1.5em; }
+section h3 { font-size: 1.25em; color: var(--muted); }
+
+/* Paragraphs & emphasis */
+section p { margin: 0.35em 0; }
+section a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); }
+section a:hover { border-bottom-color: var(--accent); }
+
+/* ========== Lists ========== */
+section ul, section ol {
+  margin: 0.4em 0;
+  padding-inline-start: 1.2em;
+}
+section li { margin: 0.25em 0; }
+section ul ul, section ol ol { margin: 0; }
+
+/* ========== Tables ========== */
+section table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: 0.95em;
+}
+section thead th {
+  background: #f9fafb;
+  text-align: left;
+  font-weight: 600;
+}
+section th, section td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+section tbody tr:nth-child(even) { background: #fbfbfc; }
+
+/* ========== Code (block & inline) ========== */
+section pre, section code, section kbd, section samp {
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+               "Liberation Mono", "Noto Sans Mono", monospace;
+  font-variant-ligatures: none;
+}
+
+section pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.1rem;
+  box-shadow: var(--shadow);
+  overflow: auto;
+  margin: 0.6em 0;
+}
+section pre code {
+  font-size: 0.84em;
+  line-height: 1.55;
+  white-space: pre;    /* keep code formatting */
+  word-break: normal;
+}
+
+section :not(pre) > code {
+  font-size: 0.94em;
+  line-height: 1.25;       /* prevent overlap with JP text */
+  background: var(--code-bg);
+  padding: 0.15em 0.35em;
+  border: 1px solid var(--border);
+  border-radius: 0.45em;
+  vertical-align: baseline; /* keep baseline with text */
+  word-break: break-word;   /* avoid spillover in JP lines */
+}
+
+/* ========== Math (MathJax v3 & KaTeX) ========== */
+/* MathJax v3 (CHTML) */
+mjx-container[display="true"] {
+  display: block !important;
+  text-align: center;
+  margin: 0.75rem 0;
+}
+mjx-container:not([display="true"]) {
+  display: inline-block !important;
+  vertical-align: baseline;
+}
+mjx-container * {
+  font-family: "Geist", "Noto Sans JP", serif;
+  line-height: 1.25; /* better collision avoidance with JP glyphs */
+}
+
+/* KaTeX */
+.katex-display {
+  display: block;
+  text-align: center;
+  margin: 0.75rem 0;
+}
+.katex { font-size: 1em; }
+.katex, .katex * {
+  font-family: "Geist", "Noto Sans JP", serif;
+  line-height: 1.25;
+}
+.katex-inline { display: inline-block; vertical-align: baseline; }
+
+/* ========== Blockquotes ========== */
+section blockquote {
+  margin: 0.6em 0;
+  padding: 0.6em 0.9em;
+  border-left: 4px solid var(--accent);
+  background: #f8fafc;
+  color: #1f2937;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+/* ========== Images (smart auto sizing) ========== */
+section img {
+  display: block;
+  margin: 0.5rem auto;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  image-rendering: auto;
+  border-radius: 8px;
+}
+
+/* Default: image allowed to grow large */
+section img { max-height: var(--img-max); min-height: var(--img-min); }
+
+/* If slide also contains text/list/table/code/math → scale down image automatically */
+section:has(h1, h2, h3, p, ul, ol, table, blockquote, pre, mjx-container, .katex) img {
+  max-height: var(--img-max-with-text);
+}
+
+/* If both heading AND paragraph exist, shrink a bit more */
+section:has(h1):has(p) img {
+  max-height: min(50vh, var(--img-max-with-text));
+}
+
+/* Two images side-by-side (common in academic slides) */
+section p:has(img) {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+section p:has(img) > img {
+  flex: 1 1 0;
+  max-height: calc(var(--img-max-with-text) - 6vh);
+}
+
+/* ========== Utility tweaks ========== */
+hr { border: none; height: 1px; background: var(--border); margin: 0.8em 0; }
+mark { background: #fff6a6; padding: 0 .15em; border-radius: 4px; }
+small { color: var(--muted); }
+
+/* Footer / header (if used via directives) */
+section footer, section header {
+  color: var(--muted);
+  font-size: 0.8em;
+}
+
+/* Print / PDF crispness */
+@media print {
+  section pre { box-shadow: none; }
+}

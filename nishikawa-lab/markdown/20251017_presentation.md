@@ -2,7 +2,7 @@
 marp: true
 title: "CNN - aohon; chapter 5.9, 5.10"
 paginate: false 
-theme: arxiv_plain
+theme: yutori
 ---
 
 # アップサンプリング
@@ -234,4 +234,3 @@ https://qz.com/1034972/the-data-that-changed-the-direction-of-ai-research-and-po
 - 低層: エッジ/テクスチャ、中層: パーツ、高層: カテゴリ概念
 - 中間層の活性マップや誤分類例が人間にとっての理解を補助している
   > ここを理解したい
-
