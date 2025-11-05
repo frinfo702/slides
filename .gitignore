@@ -61,6 +61,21 @@ htmlcov/
 ~$*.xlsx
 
 #############################
+# Rust
+#############################
+# Rust build artifacts
+/target/
+**/target/
+Cargo.lock
+
+# Rust cache and temporary files
+**/*.rs.bk
+*.pdb
+
+# Rust IDE files
+.rust-analyzer/
+
+#############################
 # Logs
 #############################
 *.log
