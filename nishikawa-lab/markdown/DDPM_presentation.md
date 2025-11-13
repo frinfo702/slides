@@ -212,7 +212,7 @@ $$
 ここまでをまとめると
 ニューラルネット $\boldsymbol{\epsilon}_\theta$ は、入力されたノイズ画像 $\mathbf{x}_t$ と時刻 $t$ から、そこに含まれるノイズ成分 $\boldsymbol{\epsilon}$ を予測するように学習すればよい。
 
-![w:600 center](../images/DDPM-algo.png "The training and sampling algorithms in DDPM (Image source: Ho et al. 2020)")
+![w:650 center](../images/DDPM-algo.png "The training and sampling algorithms in DDPM (Image source: Ho et al. 2020)")
 
 ---
 
