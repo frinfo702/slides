@@ -19,6 +19,7 @@ section {
   padding-top: 90px;
   padding-left: 40px;
   padding-right: 40px;
+  font-size: 1.3em;
 }
 
 /* https://github.com/marp-team/marpit/issues/271 */
@@ -28,7 +29,7 @@ section::after {
 }
 
 ul ul {
-  font-size: 0.7em;
+  font-size: 0.9em;
 }
 
 section.lead h1 {
@@ -73,16 +74,17 @@ section.lead p {
 header {
   background-color: #800000;
   color: #fff;
-  font-size: 0.75em;
+  font-size: 1.5em;
   font-weight: 700;
 }
 
 blockquote {
   max-width: 90%;
   border-top: 0.1em dashed #555;
-  font-size: 45%;
+  font-size: 75%;
   position: absolute;
   bottom: 20px;
+  font-family: 'Geist Mono', monospace;
 }
 blockquote::before {
   content: "";

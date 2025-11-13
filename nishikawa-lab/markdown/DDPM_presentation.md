@@ -77,6 +77,8 @@ DDPMは高品質かつ安定した学習（尤度ベース）の両立を目標�
 1. Forward Process (拡散過程) : データを徐々にノイズにしていく (固定プロセスでアルゴリズム的)
 2. Reverse Process (逆拡散過程): 学習対象。ノイズから画像空間上のデータへ復元する
 
+![w:600 center](../images/generative-overview.png "Overview of different types of generative models.")
+
 ---
 
 <!-- _class: lead -->
@@ -87,7 +89,7 @@ DDPMは高品質かつ安定した学習（尤度ベース）の両立を目標�
 
 ---
 
-<!-- 2.1. Forward Process (拡散過程) -->
+<!-- _header: 2.1. Forward Process (拡散過程) -->
 
 $q(\mathbf{x}_t|\mathbf{x}_{t-1})$ : データ→ノイズ方向への変換
 
@@ -100,6 +102,8 @@ $$
 
 ---
 
+<!-- _header: 2.1. Forward Process (拡散過程) -->
+
 マルコフ性の利点： $T$ ステップの反復計算は不要。
 $\alpha_t := 1 - \beta_t$, $\bar{\alpha}_t := \prod_{s=1}^t \alpha_s$ とおくと、
 $\mathbf{x}_0$ から任意の $\mathbf{x}_t$ を一発でサンプリング可能（Reparameterization Trick）。
@@ -111,9 +115,11 @@ $$
 
 これは **訓練時に極めて重要** となる。
 
+![w:700 center](../images/DDPM.png "The Markov chain of forward (reverse) diffusion process of generating a sample by slowly adding (removing) noise. (Image source: Ho et al. 2020 with a few additional annotations)")
+
 ---
 
-<!-- 2.2. Reverse Process (逆拡散過程) -->
+<!-- _header: 2.2. Reverse Process (逆拡散過程) -->
 
 ### $p_\theta(\mathbf{x}_{t-1} | \mathbf{x}_t)$ : ノイズからデータを復元する
 
@@ -126,7 +132,9 @@ p_\theta(\mathbf{x}{0:T}) := p(\mathbf{x}T) \prod_{t=1}^T p_\theta(\mathbf{x}_{t
 \\
 p_\theta(\mathbf{x}_{t-1}|\mathbf{x}_t) := \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
 $$
-学習対象: NN $\boldsymbol{\mu}_\theta$ が真の逆過程の平均 $\tilde{\boldsymbol{\mu}}$ を予測するように学習する
+学習対象: NN  $\boldsymbol{\mu}_\theta$ が真の逆過程の平均 $\tilde{\boldsymbol{\mu}}$ を予測するように学習する
+
+![w:400 center](../images/diffusion-example.png "An example of training a diffusion model for modeling a 2D swiss roll data. (Image source: Sohl-Dickstein et al., 2015)")
 
 ---
 
@@ -166,7 +174,8 @@ $$
 $$
 \tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0) := \frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1-\alpha_t}{\sqrt{1-\bar{\alpha}_t}} \boldsymbol{\epsilon}_t \right)
 $$
-（$\boldsymbol{\epsilon}_t$ は $\mathbf{x}_t$ の生成に使われたノイズ）
+
+（ $\boldsymbol{\epsilon}_t$ は $\mathbf{x}_t$ の生成に使われたノイズ）
 
 $L_{t-1}$ は、この **真の平均 $\tilde{\boldsymbol{\mu}}_t$** と **NNの予測 $\boldsymbol{\mu}_\theta$** の差を測る項になる。
 
@@ -185,7 +194,7 @@ $$
 L_{t-1} = \mathbb{E}_q \left[ \frac{1}{2\sigma_t^2} \lVert \tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}0) - \boldsymbol{\mu}_\theta(\mathbf{x}_t, t) \rVert^2 \right] + C
 $$
 
-さらに、$\boldsymbol{\mu}$ を直接予測するのではなく、
+さらに、 $\boldsymbol{\mu}$ を直接予測するのではなく、
 $\mathbf{x}_t = \sqrt{\bar{\alpha}_t} \mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t} \boldsymbol{\epsilon}$ の関係を使って、ノイズ $\boldsymbol{\epsilon}$ を予測する 問題に置き換える。
 
 NNで $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ が、真のノイズ $\boldsymbol{\epsilon}$ を予測するように学習する。
@@ -202,6 +211,8 @@ $$
 
 ここまでをまとめると
 ニューラルネット $\boldsymbol{\epsilon}_\theta$ は、入力されたノイズ画像 $\mathbf{x}_t$ と時刻 $t$ から、そこに含まれるノイズ成分 $\boldsymbol{\epsilon}$ を予測するように学習すればよい。
+
+![w:600 center](../images/DDPM-algo.png "The training and sampling algorithms in DDPM (Image source: Ho et al. 2020)")
 
 ---
 
@@ -268,13 +279,13 @@ $$
     - 当時のSOTA（特にGAN）に匹敵、あるいは凌駕するスコアを達成。
 - Ablation Study:
   - $\boldsymbol{\mu}$ 予測より $\boldsymbol{\epsilon}$ 予測の方が性能が良いことを確認。
-  - 損失の重み付けを無視した $L_\mathrm{simple}$ の方が性能が良いことを確認。
+  - 損失の重み付けを無視した  $L_\mathrm{simple}$ の方が性能が良いことを確認。
 
 ---
 
 <!-- _class: lead -->
 
-5. 議論とまとめ
+# 5. 議論とまとめ
 
 ---
 
