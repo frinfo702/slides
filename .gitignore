@@ -7,6 +7,7 @@
 Icon\r
 ._*
 
+
 # Editors / IDEs
 .idea/
 *.iml
@@ -59,6 +60,7 @@ htmlcov/
 ~$*.ppt
 ~$*.docx
 ~$*.xlsx
+*.pptx
 
 #############################
 # Rust
