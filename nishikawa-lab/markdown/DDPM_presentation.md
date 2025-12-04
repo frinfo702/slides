@@ -65,7 +65,7 @@ DDPMは高品質かつ安定した学習（尤度ベース）の両立を目標�
 1. Forward Process (拡散過程) : データを徐々にノイズにしていく (固定プロセスでアルゴリズム的)
 2. Reverse Process (逆拡散過程): 学習対象。ノイズから画像空間上のデータへ復元する
 
-![w:600 center](../images/generative-overview.png "Overview of different types of generative models.")
+![w:600 center](../images/DDPM/generative-overview.png "Overview of different types of generative models.")
 
 ---
 
@@ -149,7 +149,7 @@ $$
 
 これは **訓練時に極めて重要** となる。
 
-![w:700 center](../images/DDPM.png "The Markov chain of forward (reverse) diffusion process of generating a sample by slowly adding (removing) noise. (Image source: Ho et al. 2020 with a few additional annotations)")
+![w:700 center](../images/DDPM/DDPM.png "The Markov chain of forward (reverse) diffusion process of generating a sample by slowly adding (removing) noise. (Image source: Ho et al. 2020 with a few additional annotations)")
 
 ---
 
@@ -172,7 +172,7 @@ $$
 - $\boldsymbol{\Sigma}_\theta$ はDDPMでは固定値 ( $\tilde{\beta}_t\mathbf{I}$ or $\beta_t\mathbf{I}$ ) 
 
    
-![w:355 center](../images/diffusion-example.png "An example of training a diffusion model for modeling a 2D swiss roll data. (Image source: Sohl-Dickstein et al., 2015)")
+![w:355 center](../images/DDPM/diffusion-example.png "An example of training a diffusion model for modeling a 2D swiss roll data. (Image source: Sohl-Dickstein et al., 2015)")
 
 ---
 
@@ -250,7 +250,7 @@ $L_T$ は定数なので最終的な損失関数は式6である
 ここまでをまとめると
 ニューラルネット $\boldsymbol{\epsilon}_\theta$ は、入力されたノイズ画像 $\mathbf{x}_t$ と時刻 $t$ から、そこに含まれるノイズ成分 $\boldsymbol{\epsilon}$ を予測するように学習すればよい。
 
-![w:650 center](../images/DDPM-algo.png "The training and sampling algorithms in DDPM (Image source: Ho et al. 2020)")
+![w:650 center](../images/DDPM/DDPM-algo.png "The training and sampling algorithms in DDPM (Image source: Ho et al. 2020)")
 
 ---
 
@@ -319,7 +319,7 @@ $$
   - $\boldsymbol{\mu}$ 予測より $\boldsymbol{\epsilon}$ 予測の方が性能が良いことを確認。
   - 損失の重み付けを無視した  $L_\mathrm{simple}$ の方が性能が良いことを確認。
 
-![w:600 center](../images/table.png)
+![w:600 center](../images/DDPM/table.png)
 
 ---
 
