@@ -35,12 +35,12 @@ PDF_OUTPUT := $(PDF_OUT_DIR)/$(TARGET_NAME).pdf
 .PHONY: pptx
 pptx:
 	@mkdir -p $(PPTX_OUT_DIR)
-	$(MARPCMD) --pptx "$(FILE)" --theme "$(THEME)" --output "$(OUTPUT)"
+	$(MARPCMD) --pptx "$(FILE)" --theme "$(THEME)" --allow-local-files --output "$(OUTPUT)"
 
 .PHONY: pdf
 pdf:
 	@mkdir -p $(PDF_OUT_DIR)
-	$(MARPCMD) --pdf "$(FILE)" --theme "$(THEME)" --output "$(PDF_OUTPUT)"
+	$(MARPCMD) --pdf "$(FILE)" --theme "$(THEME)" --allow-local-files --output "$(PDF_OUTPUT)"
 
 .PHONY: usage
 usage:
