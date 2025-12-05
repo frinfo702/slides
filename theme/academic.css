@@ -2,108 +2,108 @@
 
 /* https://github.com/kaisugi/marp-theme-academic/ */
 
-@import 'gaia';
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@200;300&display=swap');
+@import "gaia";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@200;300&display=swap");
 
 :root {
-  --color-background: #fff;
-  --color-foreground: #333;
-  --color-highlight: #800000;
+    --color-background: #fff;
+    --color-foreground: #333;
+    --color-highlight: #800000;
 }
 
 section {
-  background-image: none;
-  font-family: 'Noto Sans JP', sans-serif;
-  padding-top: 90px;
-  padding-left: 40px;
-  padding-right: 40px;
-  font-size: 1.3em;
+    background-image: none;
+    font-family: "Noto Sans JP", sans-serif;
+    padding-top: 90px;
+    padding-left: 40px;
+    padding-right: 40px;
+    font-size: 1.4em;
 }
 
 /* https://github.com/marp-team/marpit/issues/271 */
 section::after {
-  font-weight: 700;
-  content: attr(data-marpit-pagination) '/' attr(data-marpit-pagination-total);
+    font-weight: 700;
+    content: attr(data-marpit-pagination) "/" attr(data-marpit-pagination-total);
 }
 
 ul ul {
-  font-size: 0.9em;
+    font-size: 0.9em;
 }
 
 section.lead h1 {
-  color: #800000;
-  text-align: left;
+    color: #800000;
+    text-align: left;
 }
 section.lead h1 strong {
-  -webkit-text-stroke: 1px #800000;
+    -webkit-text-stroke: 1px #800000;
 }
 section.lead h2 {
-  color: #800000;
-  text-align: left;
+    color: #800000;
+    text-align: left;
 }
 section.lead h2 strong {
-  -webkit-text-stroke: 1px #800000;
+    -webkit-text-stroke: 1px #800000;
 }
 section.lead h3 {
-  color: #800000;
-  text-align: left;
+    color: #800000;
+    text-align: left;
 }
 section.lead h3 strong {
-  -webkit-text-stroke: 1px #800000;
+    -webkit-text-stroke: 1px #800000;
 }
 section.lead h4 {
-  color: #800000;
-  text-align: left;
+    color: #800000;
+    text-align: left;
 }
 section.lead h4 strong {
-  -webkit-text-stroke: 1px #800000;
+    -webkit-text-stroke: 1px #800000;
 }
 section.lead h5 {
-  color: #800000;
-  text-align: left;
+    color: #800000;
+    text-align: left;
 }
 section.lead h5 strong {
-  -webkit-text-stroke: 1px #800000;
+    -webkit-text-stroke: 1px #800000;
 }
 section.lead p {
-  text-align: right;
+    text-align: right;
 }
 
 header {
-  background-color: #800000;
-  color: #fff;
-  font-size: 1.5em;
-  font-weight: 700;
+    background-color: #800000;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 700;
 }
 
 blockquote {
-  max-width: 90%;
-  border-top: 0.1em dashed #555;
-  font-size: 75%;
-  position: absolute;
-  bottom: 20px;
-  font-family: 'Geist Mono', monospace;
+    max-width: 90%;
+    border-top: 0.1em dashed #555;
+    font-size: 75%;
+    position: absolute;
+    bottom: 20px;
+    font-family: "Geist Mono", monospace;
 }
 blockquote::before {
-  content: "";
+    content: "";
 }
 blockquote::after {
-  content: "";
+    content: "";
 }
 
 img[alt~="center"] {
-  display: block;
-  margin: 0 auto;
+    display: block;
+    margin: 0 auto;
 }
 
 code {
-    font-family: 'Geist Mono', monospace;
+    font-family: "Geist Mono", monospace;
     font-size: 0.85em; /* reduced from inherit */
 }
 
 pre code {
-    font-family: 'Geist Mono', monospace;
+    font-family: "Geist Mono", monospace;
     font-size: 0.85em; /* reduced from inherit */
 }
