@@ -21,16 +21,18 @@ Paper: Rombach et al., CVPR 2022
 
 - Abstract
 - モチベーション
-- アプローチ
 - 提案手法
 - 既存手法との比較
-- Perceptual Image Compression
-- Latent Diffusion Models
+- Perceptual Image Compression (Stage 1)
+- Latent Diffusion Models (Stage 2)
+- Conditioning Mechanisms
+- なぜCross Attentionで条件付けが可能になるのか?
+- なぜピュアなtransformerではなくU-netなのか?
 - アーキテクチャ
 - 実験
 - 多様なタスクにおける成果
 - まとめ
-
+- 参考文献
 ---
 
 <!-- _header: Abstract -->
@@ -60,6 +62,7 @@ Paper: Rombach et al., CVPR 2022
 **アプローチ**
 - Perceptual Compression
 - Semantic Generation
+
 にプロセスを分離する。
 「画像の大半は知覚的詳細であり、意味的・概念的な部分は圧縮後も残っているはずである」[2] という発想からきている
 
@@ -110,7 +113,7 @@ LDMは大きく2つのステージに分かれる。
 - Decoder $\mathcal{D}$: 潜在表現から画像を再構成 $\tilde{x} = \mathcal{D}(z)$
 - 正則化: 潜在空間の分散を抑えるため、(i)KL正則化または(ii)VQ正則化を使用
 
-Encoderは一度学習すれば、様々なタスクのDMsの学習に再利用可能
+Encoderは一度学習すれば、様々なタスクのDMsの学習に**再利用可能**
 
 ---
 
@@ -135,7 +138,7 @@ $$
 **DDPMとの比較**
 
 $$
-L_{LDM} := \mathbb{E}_{\mathcal{E}(x), \epsilon \sim \mathcal{N}(0,1), t} \left[ || \epsilon - \epsilon_\theta(z_t, t) ||_2^2 \right]
+L_{LDM} := \mathbb{E}_{\mathcal{E}(x), \epsilon \sim \mathcal{N}(0,1), t} \left[ || \epsilon - \epsilon_\theta(z_t, t) ||_2^2 \right] \tag{1}
 $$
 $$
 L_{DDPM} := \mathbb{E}_{\mathcal{E}(x), \epsilon \sim \mathcal{N}(0,1), t} \left[ || \epsilon - \epsilon_\theta(x_t, t) ||_2^2 \right] \tag{2}
@@ -159,38 +162,44 @@ $$
 $$
 Q = W_Q^{(i)} \cdot \varphi_i(z_t), \quad K = W_K^{(i)} \cdot \tau_\theta(y), \quad V = W_V^{(i)} \cdot \tau_\theta(y)
 $$
+
+$$
+\rightarrow \quad Q =  \varphi_i(z_t) \cdot W_Q^{(i)} , \quad K =  \tau_\theta(y) \cdot W_K^{(i)} , \quad  V =  \tau_\theta(y) \cdot W_V^{(i)}
+$$
+
 - $\tau_\theta (y) \in \mathbb{R}^{M \times d_\tau}$
-- $\varphi_i(z_t) \in \mathbb{R}^{N \times d_\epsilon^{(i)}}$
-- $W_V^{(i)} \in \mathbb{R}^{d \times d_\tau}$
-- $W_Q^{(i)} \in \mathbb{R}^{d \times d_\epsilon^{(i)}}, \; W_K^{(i)} \in \mathbb{R}^{d \times d_\tau}$
+- $\varphi_i(z_t) \in \mathbb{R}^{N \times d_\epsilon^{(i)}} \rightarrow \mathbb{R}^{N \times d_i}$
+- $W_Q^{(i)} \in \mathbb{R}^{d \times d_\epsilon^{(i)}} \rightarrow \mathbb{R}^{d_i \times d}　,\; W_K^{(i)} \in \mathbb{R}^{d \times d_\tau} \rightarrow \mathbb{R}^{d_\tau \times d} ,\; W_V^{(i)} \in \mathbb{R}^{d \times d_\tau} \rightarrow \mathbb{R}^{d_\tau \times d}$
+
+---
+
+- $i$: U-netのブロックのインデックス。つまり各ブロックに対してQ, K, Vのprojectionが存在する
+- $M$: テキスト埋め込みを生成するエンコーダ（Transformer）の出力token長 (CLIPなら $M=77$ )
+- $d_\tau$: 1 token embeddingあたりの次元数（CLIP では 768 固定）
+- $N$: 画像の空間位置の総数 ( $= h \times w$ )。attentionに入れる前にこのような空間方向の圧縮をするのは典型的
+- $d$: attention headの次元。ハイパーパラメータ
+
+
+以上を組み込んで、最終的なlossは
 
 $$
 L_{DDPM} := \mathbb{E}_{\mathcal{E}(x), \epsilon \sim \mathcal{N}(0,1), t} \left[ || \epsilon - \epsilon_\theta(x_t, t, \tau_\theta(y)) ||_2^2 \right] \tag{3}
 $$
 
----
 
-<!-- _header: 式の修正 -->
-
-ただ、この式は次元が合わないので実際の `nn.MultiheadAttention` の形式に合わせると
-
-$$
-Q = W_Q^{(i)} \cdot \varphi_i(z_t), \quad K = W_K^{(i)} \cdot \tau_\theta(y), \quad V = W_V^{(i)} \cdot \tau_\theta(y)　
-$$
 
 
 ---
 
 <!-- _header: なぜCross Attentionで条件付けが可能になるのか? -->
 
-画像側特徴 $\varphi (\mathbf{z}) \rightarrow$  Query
-テキスト側特徴 $\tau (\mathbf{y}) \rightarrow$ Key / Value
+- 画像側特徴 $\varphi (\mathbf{z}) \rightarrow$  Query
+- テキスト側特徴 $\tau (\mathbf{y}) \rightarrow$ Key / Value
 
-Attention(Q, K, V) は「画像のどの空間位置がテキストのどの単語と対応すべきか」を学習
-Key-Value は “テキストの意味” を持っており
-Query は “画像の生成途中の特徴マップ” を指す
-$\mathrm{softmax}(\mathbf{Q}\mathbf{K}^\top)$ により、位置ごとに関連単語が選ばれる
-これによりテキストと画像の対応が自然に形成される
+$\mathrm{Attention}(Q, K, V)$ で画像のどの空間位置がテキストのどの単語と対応すべきかという依存関係を学習
+- Key-Value はテキストの意味を持っており、Query は 画像の生成途中の特徴マップを指す
+- $\mathrm{softmax}(\mathbf{Q}\mathbf{K}^\top)$ により、位置ごとに関連単語が選ばれる
+これによりテキストと画像の対応 (つまり条件付け) が自然に形成される
 
 ---
 
@@ -231,9 +240,9 @@ LDM は latent space で計算し比較的低解像度なのでCNN の inductive
 ![w:400 center](../images/LDM/FID_vs_training_progress.png)
 ![w:400 center](../images/LDM/FID_vs_sammple_throughput.png)
 
-* $f$ が小さい ($1, 2$): ピクセル空間に近く、計算コスト削減効果が薄い。学習も遅い
-* $f$ が大きすぎる ($32$): 情報が失われすぎ、画質（Fidelity）が停滞する
-* 最適なバランス: $f \in \{4, 8, 16\}$ が最も良いトレードオフを示した。(より左上)
+* $f$ が小さい (e.g. $1, 2$): 圧縮が足りずピクセル空間に近いので計算コスト削減効果が薄い。学習も遅い
+* $f$ が大きすぎる (e.g. $32$): 情報が失われすぎてしまい、画質が停滞する
+* 最適なバランス: $f \in \{4, 8, 16\}$ が最も良いトレードオフを示した (より左下)
 
 LDM-4 や LDM-8 が、従来のPixel-based DM (LDM-1) よりも低いFIDと高いスループットを達成
 
@@ -252,7 +261,7 @@ LDM-4 や LDM-8 が、従来のPixel-based DM (LDM-1) よりも低いFIDと高�
    - 欠損部分の補完。高解像度でも整合性の取れた補完が可能
    - U-netでの畳み込み的なサンプリングにより、$512^2$ px以上の解像度にも対応
 3. Super-Resolution (Fig. 3)
-   - 低解像度画像を入力条件として連結して学習
+   - 低解像度画像を入力条件として連結して学習する
    - SR3 (Pixel-based DM) に匹敵するFIDを達成しつつ推論は高速
    
    
@@ -283,12 +292,10 @@ Fig. 3. パラメータ数を大きく抑えつつ、FIDでSR3を上回る
 
 ---
 
-### 参考文献
+<!-- _header: 参考文献-->
 
-[1] https://arxiv.org/abs/2112.10752
+[1] Rombach, R., Blattmann, A., Lorenz, D., Esser, P., & Ommer, B. (2022). High-resolution image synthesis with latent diffusion models. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 10684–10695. https://arxiv.org/abs/2112.10752
 
 [2] Weng, Lilian. (Jul 2021). What are diffusion models? Lil’Log. https://lilianweng.github.io/posts/2021-07-11-diffusion-models/.
 
-[3] https://arxiv.org/abs/2504.03471v1
-
-[4] https://arxiv.org/abs/1505.04597
+[3] Johnson, J., Alahi, A., & Fei-Fei, L. (2016). Perceptual losses for real-time style transfer and super-resolution. Proceedings of the European Conference on Computer Vision (ECCV), 694–711. https://arxiv.org/abs/1505.04597
